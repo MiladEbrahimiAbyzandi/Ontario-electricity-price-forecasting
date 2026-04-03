@@ -34,7 +34,7 @@ HOEP-forcasting-project/
 
 ## Data Sources
 
-All data is sourced from the [IESO](https://www.ieso.ca/power-data):
+All data is sourced from the [IESO](https://reports-public.ieso.ca/public/):
 
 | Dataset | Description |
 |---------|-------------|
@@ -93,14 +93,26 @@ pip install -r requirements.txt
 
 ### Data (DVC)
 
-Large data files are tracked with [DVC](https://dvc.org) using a Google Drive remote.
+Large data files are tracked with [DVC](https://dvc.org) using a **Google Cloud Storage** remote (`gs://hoep_data6300/dvc-store`).
 
+Install the DVC GCS plugin:
 ```bash
-# Pull versioned data
-dvc pull
+pip install "dvc-gs"
+```
 
-# Check data status
-dvc status
+Authenticate using a GCP service account key:
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-key.json
+```
+
+Then pull the data:
+```bash
+dvc pull
+```
+
+Check sync status:
+```bash
+dvc status --cloud
 ```
 
 ### PySpark
