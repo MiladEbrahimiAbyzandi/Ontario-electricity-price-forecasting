@@ -1,6 +1,6 @@
 [core]
     remote = myremote
+    autostage = true
 ['remote "myremote"']
-    url = gdrive://1O5zMOrA0Nvw2S3zVMlU4jq3DEsbH760Y
-    gdrive_use_service_account = true
-    gdrive_service_account_json_file_path = hoep-price-forecasting-3d85899fa9e9.json
+    url = gs://hoep_data6300/dvc-store
+    credentialpath = /home/milad/projects/service-key/hoep-price-forecasting-dcdc770401be.json
