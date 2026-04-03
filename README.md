@@ -115,9 +115,37 @@ Check sync status:
 dvc status --cloud
 ```
 
-### PySpark
+### PySpark & HDFS
 
-Notebooks 01 and 02 use PySpark in local mode. No Hadoop cluster is required — PySpark is installed via `requirements.txt`.
+PySpark is used for data ingestion and EDA (notebooks 01 and 02). HDFS is used as an intermediate storage layer between these two notebooks for educational purposes.
+
+**PySpark** is installed via `requirements.txt` and runs in local mode — no cluster needed.
+
+**HDFS** requires a local Hadoop installation. The expected namenode is `hdfs://localhost:9000`.
+
+Install Hadoop (if not already):
+```bash
+# Download and extract Hadoop (3.x recommended)
+wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+tar -xzf hadoop-3.3.6.tar.gz
+
+# Set environment variables in ~/.bashrc
+export HADOOP_HOME=/path/to/hadoop-3.3.6
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+```
+
+Start HDFS in pseudo-distributed (single-node) mode:
+```bash
+hdfs namenode -format   # only on first run
+start-dfs.sh
+```
+
+Create the required HDFS directory:
+```bash
+hdfs dfs -mkdir -p hdfs://localhost:9000/hoep_project/interim
+```
+
+Notebook 01 will automatically export cleaned Parquet files to HDFS after saving them locally. Notebook 02 then reads directly from HDFS.
 
 ### GPU (Optional)
 
@@ -147,7 +175,7 @@ The GRU model outperforms all other models and IESO's own official predispatch f
 
 | Area | Libraries |
 |------|-----------|
-| Data processing | pandas, numpy, PySpark |
+| Data processing | pandas, numpy, PySpark, Hadoop HDFS |
 | Statistical modeling | statsmodels |
 | Machine learning | scikit-learn, XGBoost |
 | Deep learning | PyTorch, TensorFlow/Keras |
