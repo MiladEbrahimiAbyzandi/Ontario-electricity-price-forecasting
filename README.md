@@ -54,7 +54,7 @@ All data is sourced from the [IESO](https://reports-public.ieso.ca/public/):
 
 Each model is trained separately for each forecast horizon (h=1, h=2, h=3).
 
-**Evaluation metrics:** MAE, RMSE, MAPE
+**Evaluation metrics:** MAE, RMSE
 
 ---
 
