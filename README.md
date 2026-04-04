@@ -80,7 +80,7 @@ Run in order:
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/MiladEbrahimiAbyzandi/Ontario-electricity-price-forecasting.git
 cd HOEP-forcasting-project
 
 # Create and activate virtual environment
