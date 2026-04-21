@@ -8,10 +8,12 @@ version = "0.1.0"
 description = "GRU-based forecasting of Ontario hourly electricity prices"
 requires-python = ">=3.10"
 dependencies = [
-    "torch",
+   "torch",
     "numpy",
     "scikit-learn",
     "joblib",
+    "fastapi",
+    "uvicorn",
 ]
 
 [project.optional-dependencies]
