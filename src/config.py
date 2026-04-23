@@ -2,7 +2,7 @@ from pathlib import Path
 
 #--Paths---------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODELS_DIR = BASE_DIR/'models'
+MODELS_DIR = BASE_DIR/'artifacts'/'model'
 SCALER_DIR = BASE_DIR/'artifacts'/'scalers'
 
 #--model Hyperparameters-----------------------------------------------
