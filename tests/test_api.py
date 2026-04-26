@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 import pytest
 from api.main import app
 import numpy as np
-from src.config import SEQ_LENGTH, INPUT_SIZE
+from src.config import DATA_CFG
 
 
 client = TestClient(app)
@@ -18,7 +18,7 @@ def test_health():
 
 def test_predict_valid_request():
     payload = {
-        "recent_data": np.random.randn(SEQ_LENGTH, INPUT_SIZE).tolist(),
+        "recent_data": np.random.randn(DATA_CFG.seq_length, DATA_CFG.input_size).tolist(),
         "horizon": 1
             }
     response = client.post("/predict", json=payload)
@@ -34,7 +34,7 @@ def test_predict_valid_request():
 
 def test_predict_all_horizons():
     
-    data = np.random.randn(SEQ_LENGTH, INPUT_SIZE).tolist()
+    data = np.random.randn(DATA_CFG.seq_length, DATA_CFG.input_size).tolist()
 
     for h in [1,2,3]:
         response = client.post("/predict", json={"recent_data": data, "horizon": h})
@@ -48,7 +48,7 @@ def test_predict_all_horizons():
 
 def test_predict_wrong_number_of_rows():
     payload = {
-        "recent_data": np.random.randn(10, INPUT_SIZE).tolist(),  # wrong rows
+        "recent_data": np.random.randn(10, DATA_CFG.input_size).tolist(),  # wrong rows
         "horizon": 1,
     }
     response = client.post("/predict", json=payload)
@@ -57,7 +57,7 @@ def test_predict_wrong_number_of_rows():
 
 def test_predict_wrong_number_of_features():
     payload = {
-        "recent_data": np.random.randn(SEQ_LENGTH, 5).tolist(),  # wrong features
+        "recent_data": np.random.randn(DATA_CFG.seq_length, 5).tolist(),  # wrong features
         "horizon": 1,
     }
     response = client.post("/predict", json=payload)
@@ -66,7 +66,7 @@ def test_predict_wrong_number_of_features():
 
 def test_predict_invalid_horizon():
     payload = {
-        "recent_data": np.random.randn(SEQ_LENGTH, INPUT_SIZE).tolist(),
+        "recent_data": np.random.randn(DATA_CFG.seq_length, DATA_CFG.input_size).tolist(),
         "horizon": 99,  # invalid
     }
     response = client.post("/predict", json=payload)
@@ -76,7 +76,7 @@ def test_predict_invalid_horizon():
 def test_predict_missing_field():
     # sending request with no horizon field
     payload = {
-        "recent_data": np.random.randn(SEQ_LENGTH, INPUT_SIZE).tolist(),
+        "recent_data": np.random.randn(DATA_CFG.seq_length, DATA_CFG.input_size).tolist(),
     }
     response = client.post("/predict", json=payload)
     assert response.status_code == 422
