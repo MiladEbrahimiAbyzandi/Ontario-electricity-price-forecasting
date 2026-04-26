@@ -12,3 +12,7 @@ hoep-price-forecasting-3d85899fa9e9.json
 /models
 /reports
 *.egg-info/
+mlruns/
+mlartifacts/
+mlflow.db
+/artifacts
