@@ -26,10 +26,14 @@ reports/
 results/
 
 
+# MLflow (local tracking data — container connects to remote via MLFLOW_TRACKING_URI)
+mlruns/
+mlflow.db
+
 # Dev/CI
 .claude/
 README.md
-dockerfile
+Dockerfile
 .dockerignore
 
 # Secrets
