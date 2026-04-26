@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from src.config import INPUT_SIZE, HIDDEN_SIZE, NUM_LAYERS, DROPOUT
+from src.config import DATA_CFG, TRAIN_CFG
 
 class GRURegressor(nn.Module):
     """
@@ -9,10 +9,10 @@ class GRURegressor(nn.Module):
     Architecture: Input -> GRU -> Linear(1)
     """
     def __init__(self,
-                 input_size: int = INPUT_SIZE,
-                 hidden_size: int = HIDDEN_SIZE,
-                 num_layers: int = NUM_LAYERS,
-                 dropout: float = DROPOUT
+                 input_size: int = DATA_CFG.input_size,
+                 hidden_size: int = TRAIN_CFG.hidden_size,
+                 num_layers: int = TRAIN_CFG.num_layers,
+                 dropout: float = TRAIN_CFG.dropout
                  ):
         super().__init__()
 

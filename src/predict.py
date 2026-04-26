@@ -1,39 +1,49 @@
 
 import numpy as np
-import joblib
-from src.model import GRURegressor
 import torch
-from src.config import (HIDDEN_SIZE,INPUT_SIZE,NUM_LAYERS,
-                        MODELS_DIR,SEQ_LENGTH,HORIZONS,
-                        SCALER_DIR)
+import joblib
+from src.config import (
+    DATA_CFG,
+    TRAIN_CFG,
+    MODELS_DIR,
+    SCALER_DIR,
+)
+from src.model import GRURegressor
 
-
+# ── Device ─────────────────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-X_scaler = joblib.load(SCALER_DIR/"scaler_X.pkl")
-y_scaler = joblib.load(SCALER_DIR/"scaler_y.pkl")
+
+# ── Scalers — loaded once at startup ───────────────────────────────────
+scaler_X = joblib.load(SCALER_DIR / "scaler_X.pkl")
+scaler_y = joblib.load(SCALER_DIR / "scaler_y.pkl")
 
 
-def _load_model (horizon: int) -> GRURegressor:
-    """Load the trained GRU model for the given forecast horizon"""
-    
+def _load_model(horizon: int) -> GRURegressor:
+    """
+    Load the champion model for the given horizon from local artifacts.
+    Models are versioned with DVC — run 'dvc pull' to get latest champion.
+    """
     model = GRURegressor(
-        input_size = INPUT_SIZE,
-        hidden_size= HIDDEN_SIZE,
-        num_layers= NUM_LAYERS,
-        dropout= False
+        input_size=DATA_CFG.input_size,
+        hidden_size=TRAIN_CFG.hidden_size,
+        num_layers=TRAIN_CFG.num_layers,
+        dropout=TRAIN_CFG.dropout,
     )
+    model_path = MODELS_DIR / f"gru_h{horizon}.pt"
 
-    state_dict = torch.load(
-        MODELS_DIR/f"gru_h{horizon}.pt",
-        map_location=device
-    )
+    if not model_path.exists():
+        raise FileNotFoundError(
+            f"Model file not found: {model_path}\n"
+            f"Run 'dvc pull' to download model weights, "
+            f"or run 'python -m src.train' to train from scratch."
+        )
 
+    state_dict = torch.load(model_path, map_location=device)
     model.load_state_dict(state_dict)
     model.eval()
-
     return model.to(device)
 
-models={h: _load_model(h) for h in HORIZONS}
+models = {h: _load_model(h) for h in DATA_CFG.horizons}
 
 def predict(recent_data:np.ndarray, horizon:int) -> float:
 
@@ -54,14 +64,14 @@ def predict(recent_data:np.ndarray, horizon:int) -> float:
         Predicted HOEP in the original price units ($/MWh).
     """
 
-    if recent_data.shape != (SEQ_LENGTH, INPUT_SIZE):
+    if recent_data.shape != (DATA_CFG.seq_length, DATA_CFG.input_size):
         raise ValueError(
-            f"Expected shape ({SEQ_LENGTH}, {INPUT_SIZE}), "
+            f"Expected shape ({DATA_CFG.seq_length}, {DATA_CFG.input_size}), "
             f"got {recent_data.shape}"
         )
-    if horizon not in HORIZONS:
+    if horizon not in DATA_CFG.horizons:
         raise ValueError(
-            f"horizon must be one of {HORIZONS}"
+            f"horizon must be one of {DATA_CFG.horizons}"
         )
     X_scaled = X_scaler.transform(recent_data)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32).unsqueeze(0).to(device)
