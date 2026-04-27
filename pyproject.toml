@@ -9,8 +9,10 @@ description = "GRU-based forecasting of Ontario hourly electricity prices"
 requires-python = ">=3.10"
 dependencies = [
     "numpy",
+    "pandas",
     "scikit-learn",
     "joblib",
+    "torch",
     "fastapi",
     "uvicorn",
     "mlflow"
@@ -22,7 +24,7 @@ dev = [
     "pytest-cov",
     "httpx",
     "dvc",
-    "dvc[gs]",
+    "dvc[gs]"
 ]
 
 [tool.setuptools.packages.find]
