@@ -73,13 +73,13 @@ def predict(recent_data:np.ndarray, horizon:int) -> float:
         raise ValueError(
             f"horizon must be one of {DATA_CFG.horizons}"
         )
-    X_scaled = X_scaler.transform(recent_data)
+    X_scaled = scaler_X.transform(recent_data)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32).unsqueeze(0).to(device)
 
     with torch.no_grad():
         y_scaled = models[horizon](X_tensor).cpu().numpy()
 
-    y_pred = y_scaler.inverse_transform(y_scaled).flatten()[0]
+    y_pred = scaler_y.inverse_transform(y_scaled).flatten()[0]
 
     return float(y_pred)
 
