@@ -3,4 +3,4 @@
     autostage = true
 ['remote "myremote"']
     url = gs://hoep_data6300/dvc-store
-    credentialpath = /home/milad/projects/service-key/hoep-price-forecasting-dcdc770401be.json
+    
