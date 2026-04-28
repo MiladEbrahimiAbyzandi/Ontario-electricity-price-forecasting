@@ -72,7 +72,7 @@ jobs:
           registry: ${{ env.REGION }}-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_SA_KEY }}
-          
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -93,6 +93,12 @@ jobs:
           echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/gcp-key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json" >> $GITHUB_ENV
           dvc pull
+          
+      - name: Debug push URI
+        run: |
+          echo "Full image URI:"
+          echo "${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}"
+          echo "SHA: ${{ github.sha }}"
 
       - name: Build and push Docker image
         run: |
